@@ -1,0 +1,12 @@
+name: CarND-Traffic-Sign-Classifier-Project
+dependencies:
+- python=3.5
+- pip >= 9
+- jupyter
+- matplotlib
+- numpy
+- scipy
+- scikit-learn
+- pandas
+- pip:
+  - tensorflow >= 0.12.0rc1
