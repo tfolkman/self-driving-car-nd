@@ -4,4 +4,4 @@
 *.zip
 *.pickle
 data/
-
+model.ckpt.*
