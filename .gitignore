@@ -4,7 +4,3 @@
 *.zip
 *.pickle
 data/
-model.ckpt.*
-*.index
-*.meta
-*.data*
