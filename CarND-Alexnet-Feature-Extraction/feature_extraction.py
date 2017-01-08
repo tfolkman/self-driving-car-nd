@@ -5,6 +5,15 @@ import pandas as pd
 from scipy.misc import imread
 from alexnet import AlexNet
 
+def fully_connected(x, shape, mu, sigma, actiavation=True):
+    W = tf.Variable(tf.truncated_normal(shape, mean=mu, stddev=sigma))
+    b = tf.Variable(tf.zeros(shape[-1]))
+    fc = tf.matmul(x, W) + b
+    if actiavation:
+        return tf.nn.relu(fc)
+    else:
+        return fc
+
 sign_names = pd.read_csv('signnames.csv')
 nb_classes = 43
 
@@ -17,7 +26,10 @@ fc7 = AlexNet(resized, feature_extract=True)
 # TODO: Define a new fully connected layer followed by a softmax activation to classify
 # the traffic signs. Assign the result of the softmax activation to `probs` below.
 shape = (fc7.get_shape().as_list()[-1], nb_classes)  # use this shape for the weight matrix
-probs = ...
+
+fc8 = fully_connected(fc7, shape, 0, 0.1, False)
+
+probs = tf.nn.softmax(fc8)
 
 init = tf.initialize_all_variables()
 sess = tf.Session()

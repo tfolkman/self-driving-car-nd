@@ -16,7 +16,7 @@ with open('./train.p', 'rb') as f:
 X_train, X_val, y_train, y_val = train_test_split(data['features'], data['labels'], test_size=0.33, random_state=0)
 
 features = tf.placeholder(tf.float32, (None, 32, 32, 3))
-labels = tf.placeholder(tf.int64, None)
+labels = tf.one_hot(tf.placeholder(tf.int64, None), 43)
 resized = tf.image.resize_images(features, (227, 227))
 
 # Returns the second final layer of the AlexNet model,
