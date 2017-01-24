@@ -41,7 +41,6 @@ def telemetry(sid, data):
     imgString = data["image"]
     image = Image.open(BytesIO(base64.b64decode(imgString)))
     image_array = np.asarray(image)
-    image_array = augment_brightness_camera_images(image_array)
     image_array = preprocessImage(image_array)
     transformed_image_array = image_array[None, :, :, :]
     # This model currently assumes that the features of the model are just the images. Feel free to change this.
@@ -56,13 +55,6 @@ def preprocessImage(image):
     image = image[math.floor(shape[0]/5):shape[0]-25, 0:shape[1]]
     image = cv2.resize(image,(new_size_col,new_size_row), interpolation=cv2.INTER_AREA)    
     return image
-
-def augment_brightness_camera_images(image):
-    image1 = cv2.cvtColor(image,cv2.COLOR_RGB2HSV)
-    random_bright = .25+np.random.uniform()
-    image1[:,:,2] = image1[:,:,2]*random_bright
-    image1 = cv2.cvtColor(image1,cv2.COLOR_HSV2RGB)
-    return image1
 
 @sio.on('connect')
 def connect(sid, environ):

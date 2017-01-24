@@ -5,4 +5,3 @@
 *.pickle
 data/
 *.p
-*.h5
