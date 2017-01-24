@@ -16,6 +16,7 @@ from keras.models import model_from_json
 from keras import backend as K
 import cv2
 from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array
+import math
 
 # Fix error with Keras and TensorFlow
 import tensorflow as tf
@@ -26,6 +27,7 @@ sio = socketio.Server()
 app = Flask(__name__)
 model = None
 prev_image_array = None
+new_size_col,new_size_row = 200, 66
 
 @sio.on('telemetry')
 def telemetry(sid, data):
@@ -39,9 +41,8 @@ def telemetry(sid, data):
     imgString = data["image"]
     image = Image.open(BytesIO(base64.b64decode(imgString)))
     image_array = np.asarray(image)
-    mean = np.array([[[129.02680093, 133.27253171, 121.95475447]]], dtype='float64')
-    std = np.array([[[47.02422432, 46.02757431, 57.58701242]]], dtype='float64')
-    image_array = preprocess(image_array, mean, std)
+    image_array = augment_brightness_camera_images(image_array)
+    image_array = preprocessImage(image_array)
     transformed_image_array = image_array[None, :, :, :]
     # This model currently assumes that the features of the model are just the images. Feel free to change this.
     steering_angle = float(model.predict(transformed_image_array, batch_size=1))
@@ -50,12 +51,18 @@ def telemetry(sid, data):
     print(steering_angle, throttle)
     send_control(steering_angle, throttle)
 
-def preprocess(img, mean, std):
-    img = img.astype("float64")
-    img -= mean
-    img /= (std + K.epsilon())
-    img = cv2.resize(img,None,fx=1/2, fy=1/2, interpolation = cv2.INTER_AREA)
-    return img
+def preprocessImage(image):
+    shape = image.shape
+    image = image[math.floor(shape[0]/5):shape[0]-25, 0:shape[1]]
+    image = cv2.resize(image,(new_size_col,new_size_row), interpolation=cv2.INTER_AREA)    
+    return image
+
+def augment_brightness_camera_images(image):
+    image1 = cv2.cvtColor(image,cv2.COLOR_RGB2HSV)
+    random_bright = .25+np.random.uniform()
+    image1[:,:,2] = image1[:,:,2]*random_bright
+    image1 = cv2.cvtColor(image1,cv2.COLOR_HSV2RGB)
+    return image1
 
 @sio.on('connect')
 def connect(sid, environ):
