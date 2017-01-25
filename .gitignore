@@ -5,3 +5,4 @@
 *.pickle
 data/
 *.p
+model_*
