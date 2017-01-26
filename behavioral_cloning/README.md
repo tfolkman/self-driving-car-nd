@@ -33,4 +33,4 @@ The NVIDIA model starts with a normalization layer that converts the pixel data 
 
 Then 5 fully connected layers follow; all initialized with guassian initialization. Each is followed by ELU activation (except the last). The sizes are 1164, 100, 50, 10, and 1.
 
-![conv](model_arch.png)
+![conv](arch-model.png)
