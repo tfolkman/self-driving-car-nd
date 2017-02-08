@@ -37,5 +37,11 @@ Here is the warped version of the image provided in Question 1.
 
 ### Question 4
 
+To identify lane pixels and fit their positions, I first perform a histogram of a binary warped image. I then take the midpoint and the locations of the peaks on the left and right of the historgram. If I have previous images in my object, I use their midpoints to limit my search space in the histogram. I then perform the windowing technique to follow the pixels up the image and keep track of the left and right x and y pixel locations that are white in the binary image. Once I have all those pixels, I use np.polyfit to fit a second order polynomial to the data. That polynomial is then plotted onto the image. An example of this can be seen here:
+
+![warped](./readme_images/plotted_lines.jpg)
+
+### Question 5
+
 
 
